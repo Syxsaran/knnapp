@@ -1,5 +1,6 @@
 import tkinter as tk
 from sklearn.neighbors import KNeighborsClassifier
+from PIL import Image, ImageTk
 
 class KnnApp:
     def __init__(self, root):
@@ -82,6 +83,23 @@ class KnnApp:
         prediction = knn_model.predict([user_input])
 
         self.predict_label.configure(text=f"Predict: {prediction[0]}")
+
+
+
+        if prediction[0] == "slim":
+            self.open_new_window_slim("slim.png")
+
+    def open_new_window_slim(self, image_path):
+        new_window = tk.Toplevel(self.root)
+        new_window.title("Image Window")
+
+        image = Image.open(image_path)
+        photo = ImageTk.PhotoImage(image)
+
+        label = tk.Label(new_window, image=photo)
+        label.image = photo
+        label.pack()
+
 
 
 def main():
