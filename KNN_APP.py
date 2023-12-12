@@ -44,6 +44,10 @@ class KnnApp:
         frame4 = tk.Frame(self.root, width=970, height=180, bg="#FFFFFF")
         frame4.place(x=55, y=560)
 
+        open_image_button = tk.Button(frame2, text="Open Image", command=self.open_image, font=("Arial", 18), bg="#A577BB", fg="black")
+        open_image_button.place(x=120, y=450)
+        
+
         openfile_button = tk.Button(frame4, text="Open File", command=self.open_file, font=("Arial", 18), bg="#A577BB", fg="black")
         openfile_button.grid(row=0, column=0, pady=30, padx=120)
 
@@ -68,6 +72,22 @@ class KnnApp:
         ]
 
         self.update_frame1()
+
+    def open_image(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.png;*.jpg;*.jpeg;*.gif")])
+        if file_path:
+            self.open_new_window_image(file_path)
+    
+    def open_new_window_image(self, image_path):
+        new_window = tk.Toplevel(self.root)
+        new_window.title("Image Window")
+
+        image = Image.open(image_path)
+        photo = ImageTk.PhotoImage(image)
+
+        label = tk.Label(new_window, image=photo)
+        label.image = photo
+        label.pack()
 
     def open_file(self):
         file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
@@ -151,6 +171,8 @@ class KnnApp:
                 label.grid(row=i, column=j, padx=10, pady=10)
                 if i == 0:
                     label.configure(bg="#F1D3FF")
+
+
 
 def main():
     root = tk.Tk()
