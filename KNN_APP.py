@@ -1,6 +1,8 @@
 import tkinter as tk
+from tkinter import filedialog
 from sklearn.neighbors import KNeighborsClassifier
 from PIL import Image, ImageTk
+import csv
 
 class KnnApp:
     def __init__(self, root):
@@ -10,14 +12,12 @@ class KnnApp:
         
         self.widgets()
 
-    
-
     def widgets(self):
         greeting = tk.Label(self.root, text="KNN APP", fg="black", font=("Arial", 16))
         greeting.place(x=10, y=10)
 
-        frame1 = tk.Frame(self.root, width=500, height=500, bg="#001466")
-        frame1.place(x=30, y=50)
+        self.frame1 = tk.Frame(self.root, width=500, height=500, bg="#001466")
+        self.frame1.place(x=30, y=50)
 
         frame2 = tk.Frame(self.root, width=370, height=500, bg="#612180")
         frame2.place(x=700, y=10)
@@ -44,16 +44,19 @@ class KnnApp:
         frame4 = tk.Frame(self.root, width=970, height=180, bg="#FFFFFF")
         frame4.place(x=55, y=560)
 
-        predict_button = tk.Button(frame4, text="Predict", command=self.predict, font=("Arial", 22), bg="#A577BB", fg="black")
-        predict_button.grid(row=0, column=0, pady=60, padx=250)
+        openfile_button = tk.Button(frame4, text="Open File", command=self.open_file, font=("Arial", 18), bg="#A577BB", fg="black")
+        openfile_button.grid(row=0, column=0, pady=30, padx=120)
+
+        predict_button = tk.Button(frame4, text="Predict", command=self.predict, font=("Arial", 18), bg="#A577BB", fg="black")
+        predict_button.grid(row=0, column=1, pady=30, padx=120)
 
         self.predict_label = tk.Label(frame4, text="Predict: unknown", font=("Arial", 22), bg="#FFFFFF", fg="black")
-        self.predict_label.grid(row=0, column=1, pady=60, padx=60)
+        self.predict_label.grid(row=0, column=2, pady=30, padx=30)
 
         self.data = [
             ["SEX", "AGE", "WEIGHT", "HEIGHT", "BODY"],
             [1, 27, 60, 170, "slim"],
-            [1, 18, 70, 180, "fat"],
+            [1, 18, 80, 180, "fat"],
             [0, 19, 64, 174, "slim"],
             [0, 25, 80, 167, "fat"],
             [1, 40, 56, 172, "slim"],
@@ -64,14 +67,12 @@ class KnnApp:
             [1, 20, 120, 165, "fat"],
         ]
 
-        for i, row in enumerate(self.data):
-            for j, value in enumerate(row):
-                label = tk.Label(frame1, width=10, height=1, text=str(value), bg="#FFFFFF", fg="black")
-                label.grid(row=i, column=j, padx=10, pady=10)
-                if i == 0:
-                    label.configure(bg="#F1D3FF")
+        self.update_frame1()
 
-
+    def open_file(self):
+        file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
+        if file_path:
+            self.load_data_from_csv(file_path)
 
     def predict(self):
         user_input = [float(entry.get()) for entry in self.input_entries]
@@ -84,8 +85,6 @@ class KnnApp:
 
         self.predict_label.configure(text=f"Predict: {prediction[0]}")
 
-
-
         if prediction[0] == "slim":
             self.open_new_window_slim("slim.png")
 
@@ -94,10 +93,6 @@ class KnnApp:
 
         if prediction[0] == "thin":
             self.open_new_window_thin("thin.png")
-
-
-
-        
 
     def open_new_window_slim(self, image_path):
         new_window = tk.Toplevel(self.root)
@@ -110,7 +105,6 @@ class KnnApp:
         label.image = photo
         label.pack()
 
-
     def open_new_window_fat(self, image_path):
         new_window = tk.Toplevel(self.root)
         new_window.title("Image Window")
@@ -121,7 +115,6 @@ class KnnApp:
         label = tk.Label(new_window, image=photo)
         label.image = photo
         label.pack()
-
 
     def open_new_window_thin(self, image_path):
         new_window = tk.Toplevel(self.root)
@@ -134,7 +127,29 @@ class KnnApp:
         label.image = photo
         label.pack()
 
+    def load_data_from_csv(self, csv_file):
+        try:
+            with open(csv_file, 'r') as file:
+                reader = csv.reader(file)
+                self.data = [row for row in reader]
+                
+                # Update the displayed data in frame1
+                self.update_frame1()
+        except FileNotFoundError:
+            print(f"Error: CSV file '{csv_file}' not found.")
 
+    def update_frame1(self):
+        # Remove all widgets in self.frame1
+        for widget in self.frame1.winfo_children():
+            widget.destroy()
+
+        # Create new widgets from the updated data in self.data
+        for i, row in enumerate(self.data):
+            for j, value in enumerate(row):
+                label = tk.Label(self.frame1, width=10, height=1, text=str(value), bg="#FFFFFF", fg="black")
+                label.grid(row=i, column=j, padx=10, pady=10)
+                if i == 0:
+                    label.configure(bg="#F1D3FF")
 
 def main():
     root = tk.Tk()
