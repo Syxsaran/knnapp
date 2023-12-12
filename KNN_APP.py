@@ -89,7 +89,41 @@ class KnnApp:
         if prediction[0] == "slim":
             self.open_new_window_slim("slim.png")
 
+        if prediction[0] == "fat":
+            self.open_new_window_fat("fat.png")
+
+        if prediction[0] == "thin":
+            self.open_new_window_thin("thin.png")
+
+
+
+        
+
     def open_new_window_slim(self, image_path):
+        new_window = tk.Toplevel(self.root)
+        new_window.title("Image Window")
+
+        image = Image.open(image_path)
+        photo = ImageTk.PhotoImage(image)
+
+        label = tk.Label(new_window, image=photo)
+        label.image = photo
+        label.pack()
+
+
+    def open_new_window_fat(self, image_path):
+        new_window = tk.Toplevel(self.root)
+        new_window.title("Image Window")
+
+        image = Image.open(image_path)
+        photo = ImageTk.PhotoImage(image)
+
+        label = tk.Label(new_window, image=photo)
+        label.image = photo
+        label.pack()
+
+
+    def open_new_window_thin(self, image_path):
         new_window = tk.Toplevel(self.root)
         new_window.title("Image Window")
 
