@@ -72,11 +72,6 @@ class KnnApp:
 
 
 
-  
-
-
-
-
     def predict(self):
         user_input = [float(entry.get()) for entry in self.input_entries]
 
