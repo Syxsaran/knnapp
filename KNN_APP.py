@@ -131,19 +131,20 @@ class KnnApp:
         try:
             with open(csv_file, 'r') as file:
                 reader = csv.reader(file)
-                self.data = [row for row in reader]
-                
-                # Update the displayed data in frame1
-                self.update_frame1()
+                raw_data = [row for row in reader]
+
+            headers = raw_data[0]
+
+            self.data = [headers] + [[int(cell) if i < 4 else cell for i, cell in enumerate(row)] for row in raw_data[1:]]
+
+            self.update_frame1()
         except FileNotFoundError:
             print(f"Error: CSV file '{csv_file}' not found.")
 
     def update_frame1(self):
-        # Remove all widgets in self.frame1
         for widget in self.frame1.winfo_children():
             widget.destroy()
 
-        # Create new widgets from the updated data in self.data
         for i, row in enumerate(self.data):
             for j, value in enumerate(row):
                 label = tk.Label(self.frame1, width=10, height=1, text=str(value), bg="#FFFFFF", fg="black")
